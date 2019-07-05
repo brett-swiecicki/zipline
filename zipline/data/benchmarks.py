@@ -29,8 +29,9 @@ def get_benchmark_returns(symbol):
     The data is provided by IEX (https://iextrading.com/), and we can
     get up to 5 years worth of data.
     """
+    iex_token = 'pk_f7e5ef2ac3874a5e8abc811881d866f4’
     r = requests.get(
-        'https://api.iextrading.com/1.0/stock/{}/chart/5y'.format(symbol)
+        'https://cloud.iexapis.com/stable/stock/{}/chart/5y?token={}'.format(symbol, iex_token)
     )
     data = r.json()
 
