@@ -297,7 +297,7 @@ def run_algorithm(start,
         The end date of the backtest..
     initialize : callable[context -> None]
         The initialize function to use for the algorithm. This is called once
-        at the very begining of the backtest and should be used to set up
+        at the very beginning of the backtest and should be used to set up
         any state needed by the algorithm.
     capital_base : float
         The starting capital for the backtest.
