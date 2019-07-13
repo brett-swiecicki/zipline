@@ -64,6 +64,7 @@ def _run(handle_data,
          capital_base,
          bundle,
          bundle_timestamp,
+         custom_data_portal,
          start,
          end,
          output,
@@ -143,18 +144,23 @@ def _run(handle_data,
         bundle_timestamp,
     )
 
+    # TODO: Fix this for the custom DataPortal case.
     first_trading_day = \
         bundle_data.equity_minute_bar_reader.first_trading_day
 
-    data = DataPortal(
-        bundle_data.asset_finder,
-        trading_calendar=trading_calendar,
-        first_trading_day=first_trading_day,
-        equity_minute_reader=bundle_data.equity_minute_bar_reader,
-        equity_daily_reader=bundle_data.equity_daily_bar_reader,
-        adjustment_reader=bundle_data.adjustment_reader,
-    )
+    if custom_data_portal is None:
+        data = DataPortal(
+            bundle_data.asset_finder,
+            trading_calendar=trading_calendar,
+            first_trading_day=first_trading_day,
+            equity_minute_reader=bundle_data.equity_minute_bar_reader,
+            equity_daily_reader=bundle_data.equity_daily_bar_reader,
+            adjustment_reader=bundle_data.adjustment_reader,
+        )
+    else:
+        data = custom_data_portal
 
+    # TODO: Fix this for the custom DataPortal case.
     pipeline_loader = USEquityPricingLoader(
         bundle_data.equity_daily_bar_reader,
         bundle_data.adjustment_reader,
@@ -278,6 +284,7 @@ def run_algorithm(start,
                   data_frequency='daily',
                   bundle='quantopian-quandl',
                   bundle_timestamp=None,
+                  data_portal = None,
                   trading_calendar=None,
                   metrics_set='default',
                   benchmark_returns=None,
@@ -320,6 +327,8 @@ def run_algorithm(start,
     bundle_timestamp : datetime, optional
         The datetime to lookup the bundle data for. This defaults to the
         current time.
+    data_portal: DataPortal, optional
+        A custom DataPortal to backtest with.
     trading_calendar : TradingCalendar, optional
         The trading calendar to use for your backtest.
     metrics_set : iterable[Metric] or str, optional
@@ -368,6 +377,7 @@ def run_algorithm(start,
         capital_base=capital_base,
         bundle=bundle,
         bundle_timestamp=bundle_timestamp,
+        custom_data_portal=data_portal,
         start=start,
         end=end,
         output=os.devnull,
